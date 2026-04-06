@@ -25,11 +25,6 @@ const Sidebar = ({ open, onClose }) => {
         className={`fixed md:static top-0 left-0 h-full w-64 bg-white text-[#232946] z-50 shadow-lg md:shadow-none transform transition-transform duration-500 ease-in-out
         ${open ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
-        {/* Header */}
-        <div className="p-5 text-xl font-bold border-b border-gray-200">
-          FEZAP
-        </div>
-
         {/* Menu */}
         <div className="flex flex-col mt-4">
           {menu.map((item) => {

@@ -26,11 +26,13 @@ const App = () => {
   return (
     <>
       {showNavbar && <Navbar />}
-      <Routes>
-        <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />} />
-        <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-        <Route path="/projects" element={<RequireAuth><Projects /></RequireAuth>} />
-      </Routes>
+      <div className={showNavbar ? 'pt-16' : ''}>
+        <Routes>
+          <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />} />
+          <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+          <Route path="/projects" element={<RequireAuth><Projects /></RequireAuth>} />
+        </Routes>
+      </div>
     </>
   );
 };

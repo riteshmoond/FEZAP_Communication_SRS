@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import fezapLogo from '../assets/fezap-logo.png';
+import fezapLogo from '../assets/fezap-login-logo.jpeg';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const Navbar = () => {
   }, [open]);
 
   return (
-    <nav className="w-full bg-[#232946] text-white flex items-center justify-between px-6 h-16 shadow-md z-[1000]">
+    <nav className="fixed top-0 left-0 right-0 w-full bg-gray-200 text-[#232946] flex items-center justify-between px-6 h-16 shadow-md z-[1000]">
       <img src={fezapLogo} alt="FEZAP Logo" className="h-10" />
       <div className="flex items-center" ref={menuRef}>
         {/* Profile Icon (SVG) with arrow */}
