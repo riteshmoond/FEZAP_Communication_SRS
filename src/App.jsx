@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import Navbar from './components/Navbar';
+import ProjectReport from './pages/ProjectReport';
 import './App.css'
 
 
@@ -21,16 +22,18 @@ function RequireAuth({ children }) {
 const App = () => {
   const isLoggedIn = !!localStorage.getItem('userEmail');
   const location = useLocation();
+  const isProjectReportRoute = location.pathname.startsWith('/project-report/');
   // Only show Navbar on protected routes
-  const showNavbar = isLoggedIn && location.pathname !== '/';
+  const showNavbar = location.pathname !== '/' && (isLoggedIn || isProjectReportRoute);
   return (
     <>
       {showNavbar && <Navbar />}
-      <div className={showNavbar ? 'pt-16' : ''}>
+      <div className={showNavbar ? 'md:pt-16' : ''}>
         <Routes>
           <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />} />
           <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
           <Route path="/projects" element={<RequireAuth><Projects /></RequireAuth>} />
+          <Route path="/project-report/:projectId" element={<ProjectReport />} />
         </Routes>
       </div>
     </>

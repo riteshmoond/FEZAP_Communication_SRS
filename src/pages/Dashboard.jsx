@@ -3,10 +3,10 @@ import Sidebar from '../components/Sidebar';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 600);
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -47,15 +47,14 @@ const Dashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      
       <Sidebar open={sidebarShouldBeOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex-1 p-4 md:p-8">
+      <div className="flex-1 p-3 sm:p-4 lg:p-8">
 
         {/* Mobile Toggle */}
         {isMobile && (
           <button
-            className="mb-4 p-2 rounded-lg bg-white shadow"
+            className="mb-4 rounded-lg bg-white p-2 shadow"
             onClick={() => setSidebarOpen((open) => !open)}
             aria-label="Open sidebar"
           >
@@ -68,7 +67,7 @@ const Dashboard = () => {
         )}
 
         {/* Title */}
-        <h1 className="text-2xl md:text-3xl font-bold mb-4">Dashboard</h1>
+        <h1 className="mb-4 text-2xl font-bold md:text-3xl">Dashboard</h1>
 
         {/* Welcome */}
         <div className="mb-6">

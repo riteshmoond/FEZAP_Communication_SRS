@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { FaEllipsisV, FaEdit, FaFileAlt } from "react-icons/fa";
 import EditProjectModal from "./EditProjectModal";
 import CreateProjectModal from "./CreateProjectModal";
 
 const Projects = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
   const [projects, setProjects] = useState([
@@ -195,6 +197,10 @@ const Projects = () => {
     setEditProject(null);
   };
 
+  const openProjectReport = (projectId) => {
+    navigate(`/project-report/${projectId}`);
+  };
+
   return (
     <div className="flex min-h-screen w-full overflow-hidden bg-gray-100">
 
@@ -281,7 +287,13 @@ const Projects = () => {
                       >
                         <FaEdit /> Edit
                       </button>
-                      <button className="flex items-center gap-2 w-full px-3 py-2 hover:bg-gray-100 text-sm">
+                      <button
+                        className="flex items-center gap-2 w-full px-3 py-2 hover:bg-gray-100 text-sm"
+                        onClick={() => {
+                          openProjectReport(project.id);
+                          setActionMenu(null);
+                        }}
+                      >
                         <FaFileAlt /> Reports
                       </button>
                     </div>
@@ -403,7 +415,13 @@ const Projects = () => {
                             >
                               <FaEdit /> Edit
                             </button>
-                            <button className="flex items-center gap-2 w-full px-3 py-2 hover:bg-gray-100 text-sm">
+                            <button
+                              className="flex items-center gap-2 w-full px-3 py-2 hover:bg-gray-100 text-sm"
+                              onClick={() => {
+                                openProjectReport(project.id);
+                                setActionMenu(null);
+                              }}
+                            >
                               <FaFileAlt /> Reports
                             </button>
                           </div>

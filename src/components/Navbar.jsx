@@ -23,7 +23,7 @@ const Navbar = () => {
   }, [open]);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 w-full bg-gray-200 text-[#232946] flex items-center justify-between px-6 h-16 shadow-md z-[1000]">
+    <nav className="w-full md:fixed md:top-0 md:left-0 md:right-0 bg-gray-200 text-[#232946] flex items-center justify-between px-6 h-16 shadow-md z-[1000]">
       <img src={fezapLogo} alt="FEZAP Logo" className="h-10" />
       <div className="flex items-center" ref={menuRef}>
         {/* Profile Icon (SVG) with arrow */}

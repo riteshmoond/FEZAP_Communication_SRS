@@ -36,7 +36,7 @@ const Sidebar = ({ open, onClose }) => {
                 onClick={onClose}
                 className={`flex items-center gap-3 px-5 py-3 text-sm rounded-lg transition-all duration-200
                 ${isActive
-                    ? "bg-[#232946] text-white font-semibold shadow"
+                    ? " text-black font-semibold shadow"
                     : "hover:bg-gray-100"
                   }`}
               >
