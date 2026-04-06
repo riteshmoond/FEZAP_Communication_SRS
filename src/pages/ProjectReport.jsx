@@ -187,7 +187,7 @@ const ProjectReport = () => {
           {summaryCards.map((card) => (
             <div
               key={card.label}
-              className="min-w-[220px] rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-200"
+              className="min-w-220px rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-200"
             >
               <div className="flex items-center gap-4">
                 <div className={`flex h-14 w-14 items-center justify-center rounded-2xl text-2xl ${card.tint}`}>
@@ -278,7 +278,7 @@ const ProjectReport = () => {
 
             <div className="overflow-hidden rounded-2xl border border-gray-200">
               <div className="overflow-x-auto">
-                <table className="min-w-[980px] w-full text-sm">
+                <table className="min-w-980px w-full text-sm">
                   <thead className="bg-gray-50 text-left text-gray-600">
                     <tr>
                       <th className="px-4 py-3 font-semibold">Subject</th>

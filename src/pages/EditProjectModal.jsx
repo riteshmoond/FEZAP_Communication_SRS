@@ -19,7 +19,7 @@ function EditProjectModal({ project, onClose, onUpdate }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-[1000] p-2 sm:p-0">
+    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-1000 p-2 sm:p-0">
       <div className="w-full max-w-lg bg-white rounded-xl shadow-xl relative flex flex-col gap-3 max-h-[90vh] overflow-y-auto">
         <form
           onSubmit={handleSubmit}

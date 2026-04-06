@@ -88,19 +88,19 @@ const Dashboard = () => {
           <div className="flex flex-wrap gap-6 mb-8">
 
             {/* Emails Sent */}
-            <div className="flex-1 min-w-[180px] bg-[#232946] text-white rounded-xl p-6">
+            <div className="flex-1 min-w-180px bg-[#232946] text-white rounded-xl p-6">
               <div className="text-3xl font-bold">{emailsSent.toLocaleString()}</div>
               <div className="text-sm opacity-80">Total emails sent</div>
             </div>
 
             {/* Failed Emails */}
-            <div className="flex-1 min-w-[180px] bg-[#ffd369] text-[#232946] rounded-xl p-6">
+            <div className="flex-1 min-w-180px bg-[#ffd369] text-[#232946] rounded-xl p-6">
               <div className="text-3xl font-bold">{failedEmails}</div>
               <div className="text-sm opacity-80">Failed emails</div>
             </div>
 
             {/* Active Projects */}
-            <div className="flex-1 min-w-[180px] bg-white text-[#232946] rounded-xl p-6 shadow">
+            <div className="flex-1 min-w-180px bg-white text-[#232946] rounded-xl p-6 shadow">
               <div className="text-3xl font-bold">{activeProjects}</div>
               <div className="text-sm opacity-80">Active projects</div>
             </div>

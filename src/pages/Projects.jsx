@@ -227,7 +227,7 @@ const Projects = () => {
             placeholder="Search by name ,via ..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-3 py-2 border rounded-md w-full sm:w-[200px]"
+            className="px-3 py-2 border rounded-md w-full sm:w-50"
           />
 
           <button className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto">
@@ -259,7 +259,7 @@ const Projects = () => {
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <div className="font-semibold text-sm">{project.name}</div>
-                  <span className="text-[10px] px-2 py-[2px] rounded-full bg-green-100 text-green-600">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-600">
                     {project.status}
                   </span>
                 </div>
@@ -301,7 +301,7 @@ const Projects = () => {
                 </div>
               </div>
 
-              <div className="text-xs text-gray-500 break-words mb-3">
+              <div className="text-xs text-gray-500 wrap-break-word mb-3">
                 {project.secret}
               </div>
 
@@ -316,7 +316,7 @@ const Projects = () => {
                 </div>
                 <div>
                   <div className="text-gray-400">Status</div>
-                  <span className={`px-2 py-[2px] rounded-full text-[10px] ${badgeColor(project.badgeType)}`}>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] ${badgeColor(project.badgeType)}`}>
                     {project.badge}
                   </span>
                 </div>
@@ -342,7 +342,7 @@ const Projects = () => {
 
         {/* ✅ DESKTOP TABLE */}
         <div className="hidden lg:block bg-white rounded-xl shadow border border-gray-200 overflow-x-auto max-w-full">
-          <table className="min-w-[900px] w-full text-sm">
+          <table className="min-w-225 w-full text-sm">
             <thead className="bg-gray-50 text-gray-600">
               <tr>
                 <th className="p-3 text-left whitespace-nowrap">Project</th>
@@ -360,12 +360,12 @@ const Projects = () => {
 
                   <td className="p-3 whitespace-nowrap">
                     {project.name}
-                    <span className="ml-2 text-[10px] px-2 py-[2px] rounded-full bg-green-100 text-green-600">
+                    <span className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-600">
                       {project.status}
                     </span>
                   </td>
 
-                  <td className="p-3 font-mono text-xs break-words max-w-[220px]">
+                  <td className="p-3 font-mono text-xs wrap-break-word max-w-55">
                     {project.secret}
                   </td>
 
@@ -373,7 +373,7 @@ const Projects = () => {
                   <td className="p-3 whitespace-nowrap">{project.via}</td>
 
                   <td className="p-3 whitespace-nowrap">
-                    <span className={`px-2 py-[2px] text-[10px] rounded-full ${badgeColor(project.badgeType)}`}>
+                    <span className={`px-2 py-0.5 text-[10px] rounded-full ${badgeColor(project.badgeType)}`}>
                       {project.badge}
                     </span>
                   </td>

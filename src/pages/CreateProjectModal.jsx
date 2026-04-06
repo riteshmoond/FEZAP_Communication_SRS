@@ -15,7 +15,7 @@ function CreateProjectModal({ onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/20 z-[1000] flex items-center justify-center p-2 sm:p-0">
+    <div className="fixed inset-0 bg-black/20 z-1000 flex items-center justify-center p-2 sm:p-0">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-sm p-4 sm:p-8 relative flex flex-col gap-6">
         {/* Close Button */}
         <button
