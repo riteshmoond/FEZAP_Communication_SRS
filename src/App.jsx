@@ -3,7 +3,9 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
-import './App.css';
+import Navbar from './components/Navbar';
+import './App.css'
+
 
 function RequireAuth({ children }) {
   const isLoggedIn = !!localStorage.getItem('userEmail');
@@ -14,16 +16,22 @@ function RequireAuth({ children }) {
   return children;
 }
 
+
+
 const App = () => {
   const isLoggedIn = !!localStorage.getItem('userEmail');
+  const location = useLocation();
+  // Only show Navbar on protected routes
+  const showNavbar = isLoggedIn && location.pathname !== '/';
   return (
-    <div>
+    <>
+      {showNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />} />
         <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
         <Route path="/projects" element={<RequireAuth><Projects /></RequireAuth>} />
       </Routes>
-    </div>
+    </>
   );
 };
 

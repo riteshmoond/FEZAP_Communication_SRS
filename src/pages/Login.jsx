@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import fezapLogo from '../assets/fezap-logo.png';
 import loginphoto from '../assets/illustration character login.png';
-import { FaUser, FaLock } from 'react-icons/fa';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-
-
+import { FaUser, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,77 +23,100 @@ const Login = () => {
   };
 
   return (
-    <div className="login-2col-container">
-      <div className="login-illustration">
-        <img
-          src={loginphoto}
-          alt="Login Illustration"
-          style={{ width: '100%', maxWidth: 420, objectFit: 'contain' }}
-        />
-      </div>
-      <div className="login-form-col">
-        <div className="login-form-card">
-          <div style={{
-            width: 110,
-            height: 110,
-            background: '#181818',
-            borderRadius: 22,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 18px auto',
-            boxShadow: '0 4px 18px rgba(44,62,80,0.13)',
-          }}>
-            <img
-              src={fezapLogo}
-              alt="FEZAP Logo"
-              style={{
-                width: 82,
-                height: 82,
-                objectFit: 'contain',
-                borderRadius: 16,
-                background: 'transparent',
-                display: 'block',
-              }}
-            />
-          </div>
-          <h2 className="login-title">Login</h2>
-          <form className="login-form-modern" onSubmit={handleSubmit}>
-            <div className="input-group">
-              <input
-                type="text"
-                placeholder="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="input-modern"
-                autoComplete="username"
-              />
-              <span className="input-icon"><FaUser /></span>
-            </div>
-            <div className="input-group">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                className="input-modern"
-                autoComplete="current-password"
-              />
-              <span className="input-icon"><FaLock /></span>
-              <span className="input-icon input-eye" onClick={() => setShowPassword(s => !s)} style={{ cursor: 'pointer' }}>
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </span>
-            </div>
-            <div style={{ textAlign: 'right', marginBottom: 18 }}>
-              <a href="#" className="forgot-link">Forgot Password?</a>
-            </div>
-            {error && <div className="login-error-modern">{error}</div>}
-            <button type="submit" className="login-btn-modern">Login</button>
-          </form>
-          {/* <div className="login-bottom-text">
-            Don't have account? <a href="#" className="signup-link">Get Started For Free</a>
-          </div> */}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      
+      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        
+        {/* Illustration */}
+        <div className="flex justify-center">
+          <img
+            src={loginphoto}
+            alt="Login Illustration"
+            className="w-full max-w-md object-contain"
+          />
         </div>
+
+        {/* Form */}
+        <div className="flex justify-center">
+          <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
+
+            {/* Logo */}
+            <div className="w-[110px] h-[110px] bg-[#181818] rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-md">
+              <img
+                src={fezapLogo}
+                alt="FEZAP Logo"
+                className="w-[82px] h-[82px] object-contain rounded-xl"
+              />
+            </div>
+
+            <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+
+              {/* Email */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  autoComplete="username"
+                  className="w-full px-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <FaUser />
+                </span>
+              </div>
+
+              {/* Password */}
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  className="w-full px-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <FaLock />
+                </span>
+
+                <span
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
+                  onClick={() => setShowPassword(s => !s)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </div>
+
+              {/* Forgot */}
+              <div className="text-right">
+                <a href="#" className="text-sm text-blue-500 hover:underline">
+                  Forgot Password?
+                </a>
+              </div>
+
+              {/* Error */}
+              {error && (
+                <div className="text-red-500 text-sm text-center">
+                  {error}
+                </div>
+              )}
+
+              {/* Button */}
+              <button
+                type="submit"
+                className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+              >
+                Login
+              </button>
+
+            </form>
+          </div>
+        </div>
+
       </div>
     </div>
   );

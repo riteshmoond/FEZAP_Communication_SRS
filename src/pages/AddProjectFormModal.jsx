@@ -1,86 +1,5 @@
 import React, { useState } from "react";
 
-const modalOverlayStyle = {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100vw",
-  height: "100vh",
-  background: "rgba(0,0,0,0.18)",
-  zIndex: 1000,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
-
-const modalBoxStyle = {
-  background: "#fff",
-  borderRadius: 12,
-  boxShadow: "0 4px 32px rgba(44,62,80,0.18)",
-  minWidth: 420,
-  maxWidth: 480,
-  padding: "32px 32px 24px 32px",
-  position: "relative",
-  display: "flex",
-  flexDirection: "column",
-  gap: 12,
-};
-
-const closeBtnStyle = {
-  position: "absolute",
-  top: 16,
-  right: 18,
-  background: "none",
-  border: "none",
-  fontSize: 22,
-  cursor: "pointer",
-  color: "#232946",
-};
-
-const rowStyle = {
-  display: "flex",
-  gap: 12,
-  marginBottom: 0,
-};
-
-const inputStyle = {
-  flex: 1,
-  padding: "10px 10px",
-  borderRadius: 7,
-  border: "1px solid #ccc",
-  fontSize: 13,
-  marginBottom: 0,
-};
-
-const radioGroupStyle = {
-  display: "flex",
-  gap: 18,
-  alignItems: "center",
-  marginBottom: 0,
-};
-
-const radioLabelStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: 1,
-  fontSize: 13,
-  cursor: "pointer",
-  text:"w"
-};
-
-const buttonStyle = {
-  width: "100%",
-  padding: "12px 0",
-  borderRadius: 7,
-  background: "#232946",
-  color: "#fff",
-  fontWeight: 600,
-  fontSize: 18,
-  border: "none",
-  marginTop: 8,
-  cursor: "pointer",
-};
-
 function AddProjectFormModal({ channel, onClose }) {
   const [form, setForm] = useState({
     projectName: "",
@@ -103,250 +22,171 @@ function AddProjectFormModal({ channel, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add submit logic here
     onClose();
   };
 
   return (
-    <div style={modalOverlayStyle}>
-      <form style={modalBoxStyle} onSubmit={handleSubmit}>
-        <button style={closeBtnStyle} onClick={onClose} aria-label="Close" type="button">&times;</button>
-        <div style={{ fontWeight: 600, fontSize: 22, marginBottom: 8 }}>Add</div>
-        <div style={rowStyle}>
-          <input
-            style={inputStyle}
-            name="projectName"
-            placeholder="Project Name*"
-            value={form.projectName}
-            onChange={handleChange}
-            required
-          />
-          <input
-            style={inputStyle}
-            name="senderName"
-            placeholder="Sender Name"
-            value={form.senderName}
-            onChange={handleChange}
-          />
-        </div>
-        <div style={rowStyle}>
-          <input
-            style={inputStyle}
-            name="senderEmail"
-            placeholder="Sender Email"
-            value={form.senderEmail}
-            onChange={handleChange}
-          />
-          <input
-            style={inputStyle}
-            name="replyTo"
-            placeholder="Reply To"
-            value={form.replyTo}
-            onChange={handleChange}
-          />
-        </div>
-        <div style={rowStyle}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6 }}>Is Client Smtp</div>
-            <div style={radioGroupStyle}>
-              <label style={radioLabelStyle}>
-                <input
-                  type="radio"
-                  name="isClientSmtp"
-                  value="Default"
-                  checked={form.isClientSmtp === "Default"}
-                  onChange={() => handleRadio("isClientSmtp", "Default")}
-                />
-                Default
-              </label>
-              <label style={radioLabelStyle}>
-                <input
-                  type="radio"
-                  name="isClientSmtp"
-                  value="Custom"
-                  checked={form.isClientSmtp === "Custom"}
-                  onChange={() => handleRadio("isClientSmtp", "Custom")}
-                />
-                Custom
-              </label>
-            </div>
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 6 }}>Vendor</div>
-            <div style={radioGroupStyle}>
-              <label style={radioLabelStyle}>
-                <input
-                  type="radio"
-                  name="vendor"
-                  value="Aws"
-                  checked={form.vendor === "Aws"}
-                  onChange={() => handleRadio("vendor", "Aws")}
-                />
-                Aws
-              </label>
-              <label style={radioLabelStyle}>
-                <input
-                  type="radio"
-                  name="vendor"
-                  value="Sendgrid"
-                  checked={form.vendor === "Sendgrid"}
-                  onChange={() => handleRadio("vendor", "Sendgrid")}
-                />
-                Sendgrid
-              </label>
-              <label style={radioLabelStyle}>
-                <input
-                  type="radio"
-                  name="vendor"
-                  value="Mailgun"
-                  checked={form.vendor === "Mailgun"}
-                  onChange={() => handleRadio("vendor", "Mailgun")}
-                />
-                smtp
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* Show these fields only if Custom SMTP and AWS is selected */}
-        {form.isClientSmtp === "Custom" && form.vendor === "Aws" && (
-          <>
-            <div style={rowStyle}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, color: '#888', marginBottom: 2 }}>Host</div>
-                <input
-                  style={inputStyle}
-                  name="host"
-                  placeholder="Host"
-                  value={form.host || ''}
-                  onChange={handleChange}
-                />
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, color: '#888', marginBottom: 2 }}>Port</div>
-                <input
-                  style={inputStyle}
-                  name="port"
-                  placeholder="Port"
-                  value={form.port || ''}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div style={rowStyle}>
-              <input
-                style={inputStyle}
-                name="username"
-                placeholder="User Name"
-                value={form.username || ''}
-                onChange={handleChange}
-              />
-              <input
-                style={inputStyle}
-                name="password"
-                placeholder="Password"
-                type="password"
-                value={form.password || ''}
-                onChange={handleChange}
-              />
-            </div>
+    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-[1000] p-2 sm:p-0">
+      <div className="w-full max-w-lg bg-white rounded-xl shadow-xl relative flex flex-col gap-3 max-h-[90vh] overflow-y-auto">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-3 p-4 sm:p-8"
+        >
+          {/* Close */}
+          <button
+            onClick={onClose}
+            type="button"
+            className="absolute top-2 right-2 sm:top-4 sm:right-4 text-xl text-gray-700"
+          >
+            &times;
+          </button>
+          <div className="font-semibold text-xl mb-2">Add</div>
+          {/* Row 1 */}
+          <div className="flex flex-col sm:flex-row gap-3">
             <input
-              style={inputStyle}
-              name="customSenderEmail"
-              placeholder="Enter Sender Email"
-              value={form.customSenderEmail || ''}
+              name="projectName"
+              placeholder="Project Name*"
+              value={form.projectName}
               onChange={handleChange}
+              required
+              className="flex-1 px-3 py-2 border rounded-md text-sm"
             />
             <input
-              style={inputStyle}
-              name="customReplyTo"
+              name="senderName"
+              placeholder="Sender Name"
+              value={form.senderName}
+              onChange={handleChange}
+              className="flex-1 px-3 py-2 border rounded-md text-sm"
+            />
+          </div>
+          {/* Row 2 */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              name="senderEmail"
+              placeholder="Sender Email"
+              value={form.senderEmail}
+              onChange={handleChange}
+              className="flex-1 px-3 py-2 border rounded-md text-sm"
+            />
+            <input
+              name="replyTo"
               placeholder="Reply To"
-              value={form.customReplyTo || ''}
+              value={form.replyTo}
               onChange={handleChange}
+              className="flex-1 px-3 py-2 border rounded-md text-sm"
             />
-          </>
-        )}
-        {/* Show these fields only if Custom SMTP and Sendgrid is selected */}
-        {form.isClientSmtp === "Custom" && form.vendor === "Sendgrid" && (
+          </div>
+          {/* Radio Groups */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* SMTP */}
+            <div className="flex-1">
+              <div className="text-sm font-medium mb-1">Is Client Smtp</div>
+              <div className="flex gap-4 text-sm flex-col sm:flex-row">
+                <label className="flex items-center gap-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    checked={form.isClientSmtp === "Default"}
+                    onChange={() => handleRadio("isClientSmtp", "Default")}
+                  />
+                  Default
+                </label>
+                <label className="flex items-center gap-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    checked={form.isClientSmtp === "Custom"}
+                    onChange={() => handleRadio("isClientSmtp", "Custom")}
+                  />
+                  Custom
+                </label>
+              </div>
+            </div>
+            {/* Vendor */}
+            <div className="flex-1">
+              <div className="text-sm font-medium mb-1">Vendor</div>
+              <div className="flex gap-3 text-sm flex-col sm:flex-row">
+                <label className="flex items-center gap-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    checked={form.vendor === "Aws"}
+                    onChange={() => handleRadio("vendor", "Aws")}
+                  />
+                  Aws
+                </label>
+                <label className="flex items-center gap-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    checked={form.vendor === "Sendgrid"}
+                    onChange={() => handleRadio("vendor", "Sendgrid")}
+                  />
+                  Sendgrid
+                </label>
+                <label className="flex items-center gap-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    checked={form.vendor === "Mailgun"}
+                    onChange={() => handleRadio("vendor", "Mailgun")}
+                  />
+                  smtp
+                </label>
+              </div>
+            </div>
+          </div>
+          {/* AWS Custom */}
+          {form.isClientSmtp === "Custom" && form.vendor === "Aws" && (
+            <>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input name="host" placeholder="Host" value={form.host || ''} onChange={handleChange} className="flex-1 px-3 py-2 border rounded-md text-sm" />
+                <input name="port" placeholder="Port" value={form.port || ''} onChange={handleChange} className="flex-1 px-3 py-2 border rounded-md text-sm" />
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input name="username" placeholder="User Name" value={form.username || ''} onChange={handleChange} className="flex-1 px-3 py-2 border rounded-md text-sm" />
+                <input name="password" type="password" placeholder="Password" value={form.password || ''} onChange={handleChange} className="flex-1 px-3 py-2 border rounded-md text-sm" />
+              </div>
+              <input name="customSenderEmail" placeholder="Enter Sender Email" value={form.customSenderEmail || ''} onChange={handleChange} className="px-3 py-2 border rounded-md text-sm" />
+              <input name="customReplyTo" placeholder="Reply To" value={form.customReplyTo || ''} onChange={handleChange} className="px-3 py-2 border rounded-md text-sm" />
+            </>
+          )}
+          {/* Sendgrid */}
+          {form.isClientSmtp === "Custom" && form.vendor === "Sendgrid" && (
             <input
-              style={inputStyle}
               name="sendgridApiKey"
               placeholder="Sendgrid API Key"
               value={form.sendgridApiKey || ''}
               onChange={handleChange}
+              className="px-3 py-2 border rounded-md text-sm"
             />
-     
-        )}
-
-        {/* Show these fields only if Custom SMTP and smtp is selected */}
-        {form.isClientSmtp === "Custom" && form.vendor === "Mailgun" && (
+          )}
+          {/* Mailgun */}
+          {form.isClientSmtp === "Custom" && form.vendor === "Mailgun" && (
             <>
-            <div style={rowStyle}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, color: '#888', marginBottom: 2 }}>Host</div>
-                <input
-                  style={inputStyle}
-                  name="host"
-                  placeholder="Host"
-                  value={form.host || ''}
-                  onChange={handleChange}
-                />
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input name="host" placeholder="Host" value={form.host || ''} onChange={handleChange} className="flex-1 px-3 py-2 border rounded-md text-sm" />
+                <input name="port" placeholder="Port" value={form.port || ''} onChange={handleChange} className="flex-1 px-3 py-2 border rounded-md text-sm" />
               </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, color: '#888', marginBottom: 2 }}>Port</div>
-                <input
-                  style={inputStyle}
-                  name="port"
-                  placeholder="Port"
-                  value={form.port || ''}
-                  onChange={handleChange}
-                />
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input name="username" placeholder="User Name" value={form.username || ''} onChange={handleChange} className="flex-1 px-3 py-2 border rounded-md text-sm" />
+                <input name="password" type="password" placeholder="Password" value={form.password || ''} onChange={handleChange} className="flex-1 px-3 py-2 border rounded-md text-sm" />
               </div>
-            </div>
-            <div style={rowStyle}>
-              <input
-                style={inputStyle}
-                name="username"
-                placeholder="User Name"
-                value={form.username || ''}
-                onChange={handleChange}
-              />
-              <input
-                style={inputStyle}
-                name="password"
-                placeholder="Password"
-                type="password"
-                value={form.password || ''}
-                onChange={handleChange}
-              />
-            </div>
-            <input
-              style={inputStyle}
-              name="customSenderEmail"
-              placeholder="Enter Sender Email"
-              value={form.customSenderEmail || ''}
-              onChange={handleChange}
-            />
-            {/* <input
-              style={inputStyle}
-              name="customReplyTo"
-              placeholder="Reply To"
-              value={form.customReplyTo || ''}
-              onChange={handleChange}
-            /> */}
-          </>
-        )}
-
-        {/* Always show this field for now */}
-        <input
-          style={{ ...inputStyle, marginBottom: 0 }}
-          name="senderEmailUsername"
-          placeholder="Sender Email Username"
-          value={form.senderEmailUsername}
-          onChange={handleChange}
-        />
-        <button style={buttonStyle} type="submit">Add</button>
-      </form>
+              <input name="customSenderEmail" placeholder="Enter Sender Email" value={form.customSenderEmail || ''} onChange={handleChange} className="px-3 py-2 border rounded-md text-sm" />
+            </>
+          )}
+          {/* Username */}
+          <input
+            name="senderEmailUsername"
+            placeholder="Sender Email Username"
+            value={form.senderEmailUsername}
+            onChange={handleChange}
+            className="px-3 py-2 border rounded-md text-sm"
+          />
+          {/* Button */}
+          <button
+            type="submit"
+            className="w-full py-3 bg-[#232946] text-white rounded-md font-semibold mt-2"
+          >
+            Add
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

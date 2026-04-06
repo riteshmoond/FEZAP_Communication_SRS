@@ -1,90 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate, Link } from 'react-router-dom';
-import fezapLogo from '../assets/fezap-logo.png';
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { FaProjectDiagram, FaTachometerAlt } from "react-icons/fa";
 
 const Sidebar = ({ open, onClose }) => {
-  // Always show content if open, or if on desktop (width > 600)
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  const showContent = open || !isMobile;
-  const navigate = useNavigate();
-  const handleLogout = (e) => {
-    e.preventDefault();
-    localStorage.removeItem('userEmail');
-    navigate('/');
-  };
+  const location = useLocation();
+
+  const menu = [
+    { name: "Dashboard", path: "/dashboard", icon: <FaTachometerAlt /> },
+    { name: "Projects", path: "/projects", icon: <FaProjectDiagram /> },
+  ];
+
   return (
-    <aside className={`sidebar${open ? ' open' : ''}`} style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <>
+      {/* Overlay (mobile) */}
+      {open && (
+        <div
+          className="fixed inset-0 bg-black/30 z-40 md:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Sidebar */}
       <div
-        style={{
-          padding: 24,
-          display: showContent ? 'flex' : 'none',
-          flexDirection: 'column',
-          flex: 1,
-          minHeight: 0,
-        }}
+        className={`fixed md:static top-0 left-0 h-full w-64 bg-white text-[#232946] z-50 shadow-lg md:shadow-none transform transition-transform duration-500 ease-in-out
+        ${open ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
-        <img src={fezapLogo} alt="FEZAP Logo" style={{ width: 90, margin: '0 auto 24px auto', display: 'block' }} />
-        <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 32 }}>
-          {/* <h2 className="sidebar-title" style={{ marginBottom: 32, textAlign: 'center' }}>Menu</h2>  */}
-          <nav>
-            <ul className="sidebar-list" style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: 0, margin: 0 }}>
-              <li>
-                <Link to="/dashboard" className="sidebar-link">
-                  Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link to="/projects" className="sidebar-link">
-                  Projects
-                </Link>
-              </li>
-              <li>
-                <Link to="/apikeys" className="sidebar-link">
-                  API Keys
-                </Link>
-              </li>
-              <li>
-                <Link to="/emaillogs" className="sidebar-link">
-                  Email Logs
-                </Link>
-              </li>
-              <li>
-                <Link to="/settings" className="sidebar-link">
-                  Settings
-                </Link>
-              </li>
-            </ul>
-          </nav>
+        {/* Header */}
+        <div className="p-5 text-xl font-bold border-b border-gray-200">
+          FEZAP
         </div>
-        <div style={{ width: '100%' }}>
-          <a
-            href="#"
-            className="sidebar-close-btn"
-            style={{ width: '100%' }}
-            onClick={handleLogout}
-          >
-            Logout
-          </a>
-          {onClose && isMobile && (
-            <button className="sidebar-close-btn" onClick={onClose} style={{ width: '100%' }}>
-              Close
-            </button>
-          )}
+
+        {/* Menu */}
+        <div className="flex flex-col mt-4">
+          {menu.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.name}
+                to={item.path}
+                onClick={onClose}
+                className={`flex items-center gap-3 px-5 py-3 text-sm rounded-lg transition-all duration-200
+                ${isActive
+                    ? "bg-[#232946] text-white font-semibold shadow"
+                    : "hover:bg-gray-100"
+                  }`}
+              >
+                <span className="text-lg">{item.icon}</span>
+                {item.name}
+              </Link>
+            );
+          })}
         </div>
       </div>
-    </aside>
+    </>
   );
-};
-
-Sidebar.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func,
 };
 
 export default Sidebar;
