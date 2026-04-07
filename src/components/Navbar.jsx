@@ -7,6 +7,19 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
+  const userEmail = localStorage.getItem('userEmail') || 'guest@fezap.com';
+  const userName = userEmail.split('@')[0]
+    .split(/[._-]/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ') || 'Guest User';
+  const userInitials = userName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -23,51 +36,76 @@ const Navbar = () => {
   }, [open]);
 
   return (
-    <nav className="w-full md:fixed md:top-0 md:left-0 md:right-0 bg-gray-200 text-[#232946] flex items-center justify-between px-6 h-16 shadow-md z-1000">
-      <img src={fezapLogo} alt="FEZAP Logo" className="h-10" />
+     <nav className="w-full md:fixed md:top-0 md:left-0 md:right-0 bg-gray-200 text-[#232946] flex items-center justify-between px-6 h-16 shadow-md z-1000">
+      <div className="flex items-center gap-5">
+        <img src={fezapLogo} alt="FEZAP Logo" className="h-10 w-auto rounded-md object-cover "/>
+        {/* <div className="hidden sm:block">
+          <div className="text-sm font-semibold tracking-wide text-slate-800">FEZAP Communication</div>
+          <div className="text-xs text-slate-500">Project notifications workspace</div>
+        </div> */}
+      </div>
+
       <div className="flex items-center" ref={menuRef}>
-        {/* Profile Icon (SVG) with arrow */}
         <button
-          className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md focus:outline-none relative group"
+          className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-2 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md focus:outline-none"
           onClick={() => setOpen((v) => !v)}
           aria-label="Profile menu"
         >
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#232946] text-sm font-bold text-white shadow-sm">
+            {userInitials}
+          </div>
+          <div className="hidden text-left sm:block">
+            <div className="max-w-40 truncate text-sm font-semibold text-slate-800">{userName}</div>
+            <div className="max-w-40 truncate text-xs text-slate-500">{userEmail}</div>
+          </div>
           <svg
-            width="26"
-            height="26"
-            viewBox="0 0 24 24"
+            className={`h-4 w-4 text-slate-500 transition-transform ${open ? 'rotate-180' : ''}`}
             fill="none"
-            stroke="#232946"
+            stroke="currentColor"
             strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            viewBox="0 0 24 24"
           >
-            <circle cx="12" cy="8" r="4" />
-            <path d="M4 20c0-4 4-7 8-7s8 3 8 7" />
+            <path d="M6 9l6 6 6-6" />
           </svg>
-          <svg className="absolute -right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white group-hover:text-gray-200 transition" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
         </button>
+
         {open && (
-          <div className="fixed right-6 top-16 w-56 bg-white text-[#232946] rounded-xl shadow-2xl py-3 z-50 border border-gray-100 transition-all duration-200 ease-out">
-            <div className="flex items-center gap-3 px-5 pb-3 border-b border-gray-100 mb-2">
-              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#232946" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-7 8-7s8 3 8 7" /></svg>
-              </div>
-              <div>
-                <div className="font-semibold">User Name</div>
-                <div className="text-xs text-gray-500">user@email.com</div>
+          <div className="fixed right-4 top-16 z-50 w-72 overflow-hidden rounded-2xl border border-slate-200 bg-white text-[#232946] shadow-2xl md:right-6">
+            <div className="bg-gradient-to-r from-[#232946] to-slate-700 px-5 py-4 text-white">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-base font-bold backdrop-blur-sm">
+                  {userInitials}
+                </div>
+                <div className="min-w-0">
+                  <div className="truncate text-base font-semibold">{userName}</div>
+                  <div className="truncate text-xs text-slate-200">{userEmail}</div>
+                </div>
               </div>
             </div>
-            <button className="w-full text-left px-5 py-2 hover:bg-gray-50 transition rounded-none">Profile</button>
-            <button
-              className="w-full text-left px-5 py-2 hover:bg-gray-50 transition rounded-none"
-              onClick={() => {
-                localStorage.removeItem('userEmail');
-                navigate('/');
-              }}
-            >
-              Logout
-            </button>
+
+            <div className="px-3 py-3">
+              <div className="mb-3 rounded-xl bg-slate-50 px-4 py-3">
+                <div className="text-xs font-medium uppercase tracking-wide text-slate-400">Account</div>
+                <div className="mt-1 text-sm font-semibold text-slate-700">Active Session</div>
+                <div className="text-xs text-slate-500">You are signed in to manage projects and reports.</div>
+              </div>
+
+              <button className="mb-2 flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50">
+                <span>Profile</span>
+                <span className="text-xs text-slate-400">View</span>
+              </button>
+
+              <button
+                className="flex w-full items-center justify-between rounded-xl bg-rose-50 px-4 py-3 text-left text-sm font-semibold text-rose-600 transition hover:bg-rose-100"
+                onClick={() => {
+                  localStorage.removeItem('userEmail');
+                  navigate('/');
+                }}
+              >
+                <span>Logout</span>
+                <span className="text-xs text-rose-400">Exit</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
