@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   FaBell,
-  FaCalendarAlt,
   FaEnvelope,
   FaInfoCircle,
   FaRedo,
@@ -147,9 +146,13 @@ const ProjectReport = () => {
       const matchesEmail = row.email.toLowerCase().includes(emailFilter.toLowerCase());
       const matchesSubject = row.subject.toLowerCase().includes(subjectFilter.toLowerCase());
       const matchesStatus = statusFilter ? row.status === statusFilter : true;
-      return matchesEmail && matchesSubject && matchesStatus;
+      const rowDate = row.sentAt.slice(0, 10);
+      const matchesFromDate = fromDate ? rowDate >= fromDate : true;
+      const matchesToDate = toDate ? rowDate <= toDate : true;
+
+      return matchesEmail && matchesSubject && matchesStatus && matchesFromDate && matchesToDate;
     });
-  }, [emailFilter, subjectFilter, statusFilter]);
+  }, [emailFilter, subjectFilter, statusFilter, fromDate, toDate]);
 
   const resetFilters = () => {
     setEmailFilter("");
@@ -208,8 +211,8 @@ const ProjectReport = () => {
               <FaInfoCircle className="text-sky-500" />
             </div>
 
-            <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
-              <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2">
+            <div className="mb-5 flex flex-col gap-3 xl:flex-row xl:flex-wrap xl:items-center">
+              <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2">
                 <FaSearch className="text-gray-400" />
                 <input
                   value={emailFilter}
@@ -219,7 +222,7 @@ const ProjectReport = () => {
                 />
               </div>
 
-              <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2">
+              <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2">
                 <FaSearch className="text-gray-400" />
                 <input
                   value={subjectFilter}
@@ -232,7 +235,7 @@ const ProjectReport = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm outline-none"
+                className="min-w-40 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-600 outline-none"
               >
                 <option value="">Select Status</option>
                 <option value="Send">Send</option>
@@ -241,8 +244,7 @@ const ProjectReport = () => {
                 <option value="Bounce">Bounce</option>
               </select>
 
-              <label className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-500">
-                <FaCalendarAlt />
+              <label className="flex min-w-40 items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-500">
                 <input
                   type="date"
                   value={fromDate}
@@ -251,9 +253,8 @@ const ProjectReport = () => {
                 />
               </label>
 
-              <div className="flex gap-3">
-                <label className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-500">
-                  <FaCalendarAlt />
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <label className="flex min-w-40 items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-500">
                   <input
                     type="date"
                     value={toDate}
@@ -264,7 +265,7 @@ const ProjectReport = () => {
 
                 <button
                   onClick={resetFilters}
-                  className="inline-flex items-center gap-2 rounded-xl bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-200"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-200"
                 >
                   <FaRedo />
                   Reset Filter

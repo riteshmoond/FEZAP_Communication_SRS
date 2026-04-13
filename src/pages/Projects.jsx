@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { FaEllipsisV, FaEdit, FaFileAlt } from "react-icons/fa";
@@ -8,6 +8,9 @@ import CreateProjectModal from "./CreateProjectModal";
 const Projects = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [vendorFilter, setVendorFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [viaFilter, setViaFilter] = useState("");
 
   const [projects, setProjects] = useState([
     {
@@ -37,7 +40,7 @@ const Projects = () => {
       name: "Phoenix Cloud",
       secret: "91d5a670-9f8c-43a4-9fc7-2f6f8f36d301",
       vendor: "sendgrid",
-      via: "Email",
+      via: "Mail",
       status: "Active",
       badge: "Verified",
       badgeType: "verified",
@@ -48,8 +51,8 @@ const Projects = () => {
       name: "Retail Sync",
       secret: "2b6d13f4-9e39-4f96-8e6f-b41d0fb3f11a",
       vendor: "aws",
-      via: "SMS",
-      status: "Active",
+      via: "WhatsApp",
+      status: "Deactive",
       badge: "Verify Webhook",
       badgeType: "webhook",
       enabled: false,
@@ -81,8 +84,8 @@ const Projects = () => {
       name: "Astra Connect",
       secret: "fe38df45-b9b7-4f05-8677-0d2989b4d5c0",
       vendor: "postmark",
-      via: "Email",
-      status: "Active",
+      via: "Mail",
+      status: "Deactive",
       badge: "Verify Webhook",
       badgeType: "webhook",
       enabled: false,
@@ -92,7 +95,7 @@ const Projects = () => {
       name: "Growth Pulse",
       secret: "68ad7e1a-4a1a-4f53-b73c-c82d315c6ee7",
       vendor: "aws",
-      via: "SMS",
+      via: "WhatsApp",
       status: "Active",
       badge: "Domain Linked",
       badgeType: "domain",
@@ -114,8 +117,8 @@ const Projects = () => {
       name: "Beacon Ops",
       secret: "83b116a3-67db-466c-a2a0-640a3031e6c5",
       vendor: "sendgrid",
-      via: "Email",
-      status: "Active",
+      via: "Mail",
+      status: "Deactive",
       badge: "Verify Webhook",
       badgeType: "webhook",
       enabled: false,
@@ -136,7 +139,7 @@ const Projects = () => {
       name: "Alpha Reach",
       secret: "c5eb4ef1-f0cb-4923-8234-d095d3ef7b9d",
       vendor: "postmark",
-      via: "Email",
+      via: "Mail",
       status: "Active",
       badge: "Verified",
       badgeType: "verified",
@@ -201,6 +204,41 @@ const Projects = () => {
     navigate(`/project-report/${projectId}`);
   };
 
+  const vendorOptions = useMemo(
+    () => [...new Set(projects.map((project) => project.vendor))],
+    [projects]
+  );
+
+  const viaOptions = ["Mail", "WhatsApp"];
+
+  const statusOptions = useMemo(
+    () => [...new Set(projects.map((project) => project.status))],
+    [projects]
+  );
+
+  const filteredProjects = useMemo(() => {
+    return projects.filter((project) => {
+      const query = searchTerm.trim().toLowerCase();
+      const matchesSearch = query
+        ? [project.name, project.via, project.vendor, project.secret, project.badge]
+            .filter(Boolean)
+            .some((value) => value.toLowerCase().includes(query))
+        : true;
+      const matchesVendor = vendorFilter ? project.vendor === vendorFilter : true;
+      const matchesStatus = statusFilter ? project.status === statusFilter : true;
+      const matchesVia = viaFilter ? project.via === viaFilter : true;
+
+      return matchesSearch && matchesVendor && matchesStatus && matchesVia;
+    });
+  }, [projects, searchTerm, vendorFilter, statusFilter, viaFilter]);
+
+  const resetFilters = () => {
+    setSearchTerm("");
+    setVendorFilter("");
+    setStatusFilter("");
+    setViaFilter("");
+  };
+
   return (
     <div className="flex min-h-screen w-full overflow-hidden bg-gray-100">
 
@@ -230,16 +268,50 @@ const Projects = () => {
             className="px-3 py-2 border rounded-md w-full sm:w-50"
           />
 
-          <button className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto">
-            Credentials
-          </button>
-          <button className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto">
-            Status
-          </button>
-          <button className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto">
-            Email
-          </button>
-          <button className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto">
+          <select
+            value={vendorFilter}
+            onChange={(e) => setVendorFilter(e.target.value)}
+            className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto"
+          >
+            <option value="">Credentials</option>
+            {vendorOptions.map((vendor) => (
+              <option key={vendor} value={vendor}>
+                {vendor}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto"
+          >
+            <option value="">Status</option>
+            {statusOptions.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={viaFilter}
+            onChange={(e) => setViaFilter(e.target.value)}
+            className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto"
+          >
+            <option value="">Email</option>
+            {viaOptions.map((via) => (
+              <option key={via} value={via}>
+                {via}
+              </option>
+            ))}
+          </select>
+
+          <button
+            className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto"
+            onClick={resetFilters}
+            type="button"
+          >
             Reset Filter
           </button>
 
@@ -253,7 +325,7 @@ const Projects = () => {
 
         {/* ✅ MOBILE + TABLET VIEW */}
         <div className="block lg:hidden space-y-3">
-          {projects.map((project) => (
+          {filteredProjects.map((project) => (
             <div key={project.id} className="bg-white rounded-xl shadow border p-4">
 
               <div className="flex justify-between items-start mb-2">
@@ -355,7 +427,7 @@ const Projects = () => {
             </thead>
 
             <tbody>
-              {projects.map((project) => (
+              {filteredProjects.map((project) => (
                 <tr key={project.id} className="border-t hover:bg-gray-50">
 
                   <td className="p-3 whitespace-nowrap">

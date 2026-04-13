@@ -47,16 +47,12 @@ const Navbar = () => {
 
       <div className="flex items-center" ref={menuRef}>
         <button
-          className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-2 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md focus:outline-none"
+          className="group flex items-center gap-2 rounded-full border border-slate-200 bg-white px-2 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md focus:outline-none"
           onClick={() => setOpen((v) => !v)}
           aria-label="Profile menu"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#232946] text-sm font-bold text-white shadow-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#232946] text-sm font-bold text-white shadow-sm">
             {userInitials}
-          </div>
-          <div className="hidden text-left sm:block">
-            <div className="max-w-40 truncate text-sm font-semibold text-slate-800">{userName}</div>
-            <div className="max-w-40 truncate text-xs text-slate-500">{userEmail}</div>
           </div>
           <svg
             className={`h-4 w-4 text-slate-500 transition-transform ${open ? 'rotate-180' : ''}`}
@@ -76,7 +72,7 @@ const Navbar = () => {
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-base font-bold backdrop-blur-sm">
                   {userInitials}
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0">   
                   <div className="truncate text-base font-semibold">{userName}</div>
                   <div className="truncate text-xs text-slate-200">{userEmail}</div>
                 </div>
