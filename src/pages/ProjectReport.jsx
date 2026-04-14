@@ -118,7 +118,7 @@ const summaryCards = [
 
 const statusBadge = (status) => {
   if (status === "Open") return "bg-blue-50 text-blue-600";
-  if (status === "Delivered") return "bg-emerald-50 text-emerald-600";
+  if (status === "Delivered") return "bg-em erald-50 text-emerald-600";
   if (status === "Bounce") return "bg-rose-50 text-rose-600";
   return "bg-amber-50 text-amber-700";
 };
