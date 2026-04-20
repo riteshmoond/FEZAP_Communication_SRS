@@ -9,16 +9,39 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Simple validation (can be replaced with real auth)
-    if (email && password) {
-      localStorage.setItem("userEmail", email);
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!email || !password) {
+    alert("Please enter email and password");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      
+      localStorage.setItem("token", result.token);
+
+      
       navigate("/dashboard");
     } else {
-      alert("Please enter email and password");
+      alert(result.message || "Login failed");
     }
-  };
+
+  } catch (error) {
+    alert("Login error: " + error.message);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-500 flex items-center justify-center px-4">

@@ -93,7 +93,18 @@ const Navbar = () => {
 
               <button
                 className="flex w-full items-center justify-between rounded-xl bg-rose-50 px-4 py-3 text-left text-sm font-semibold text-rose-600 transition hover:bg-rose-100"
-                onClick={() => {
+                onClick={async () => {
+                  try {
+                    await fetch("http://localhost:5000/api/auth/logout", {
+                      method: "POST",
+                      body: "",
+                      redirect: "follow"
+                    });
+                  } catch (error) {
+                    // Optionally handle error
+                    console.log(error);
+                    
+                  }
                   localStorage.removeItem('userEmail');
                   navigate('/');
                 }}

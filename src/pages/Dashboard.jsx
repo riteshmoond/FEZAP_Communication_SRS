@@ -4,6 +4,26 @@ import Sidebar from '../components/Sidebar';
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [userInfo, setUserInfo] = useState(null);
+  // Fetch user info from backend
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/auth/me", {
+          method: "GET",
+          credentials: "include" // send cookies
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUserInfo(data);
+        }
+      } catch (error) {
+        // Optionally handle error
+        console.log(error);
+      }
+    };
+    fetchUserInfo();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -72,10 +92,10 @@ const Dashboard = () => {
         {/* Welcome */}
         <div className="mb-6">
           <p className="text-gray-700">
-            Welcome,{" "}
+            Welcome,{' '}
             <span className="font-semibold text-blue-600">
-              {localStorage.getItem('userEmail') || 'User'}
-            </span>{" "}
+              {userInfo?.name || userInfo?.email || localStorage.getItem('userEmail') || 'User'}
+            </span>{' '}
             ! You are now logged in.
           </p>
         </div>
