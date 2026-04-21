@@ -19,18 +19,19 @@ const Login = () => {
 
   try {
     const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password })
-    });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  credentials: "include",   // 🔥 ADD THIS
+  body: JSON.stringify({ email, password })
+});
 
     const result = await response.json();
 
     if (response.ok) {
       
-      localStorage.setItem("token", result.token);
+     
 
       
       navigate("/dashboard");
