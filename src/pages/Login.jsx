@@ -18,22 +18,22 @@ const Login = () => {
   }
 
   try {
-    const response = await fetch("/api/auth/login", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  credentials: "include",   // 🔥 ADD THIS
-  body: JSON.stringify({ email, password })
-});
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({ email, password })
+    });
 
     const result = await response.json();
 
     if (response.ok) {
-      
-     
-
-      
+      // Save user email to localStorage for auth
+      if(result.user && result.user.email){
+        localStorage.setItem('userEmail', result.user.email);
+      }
       navigate("/dashboard");
     } else {
       alert(result.message || "Login failed");
@@ -89,6 +89,7 @@ const Login = () => {
               placeholder="Enter password"
               value={password}
               onChange={e => setPassword(e.target.value)}
+              autoComplete="current-password"
               className="w-full mt-1 px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 pr-10"
             />
 
