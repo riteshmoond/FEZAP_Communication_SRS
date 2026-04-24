@@ -8,113 +8,7 @@ import {
 } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-
-const reportRows = [
-  {
-    id: 1,
-    subject: "Registration Confirmation for Amazon Fee Drop - Bengaluru Edition",
-    email: "ferricforgegroupinfo@gmail.com",
-    channel: "Aws",
-    status: "Send",
-    sentAt: "2026-03-13-10:24:06",
-  },
-  {
-    id: 2,
-    subject: "Registration Confirmation for Amazon Fee Drop - Bengaluru Edition",
-    email: "ij.sooraj@yahoo.com",
-    channel: "Aws",
-    status: "Delivered",
-    sentAt: "2026-03-13-10:24:06",
-  },
-  {
-    id: 3,
-    subject: "Registration Confirmation for Amazon Fee Drop - Bengaluru Edition",
-    email: "dilip.kumar@tgspl.in",
-    channel: "Aws",
-    status: "Delivered",
-    sentAt: "2026-03-13-08:04:06",
-  },
-  {
-    id: 4,
-    subject: "Registration Confirmation for Amazon Fee Drop - Bengaluru Edition",
-    email: "jainimpex092019@gmail.com",
-    channel: "Aws",
-    status: "Delivered",
-    sentAt: "2026-03-13-05:31:04",
-  },
-  {
-    id: 5,
-    subject: "Registration Confirmation for Amazon Fee Drop - Bengaluru Edition",
-    email: "rajesh@kiratech.in",
-    channel: "Aws",
-    status: "Delivered",
-    sentAt: "2026-03-13-05:23:06",
-  },
-  {
-    id: 6,
-    subject: "Registration Confirmation for Amazon Fee Drop - Bengaluru Edition",
-    email: "anuradharajesh@totztouch.com",
-    channel: "Aws",
-    status: "Delivered",
-    sentAt: "2026-03-13-05:21:05",
-  },
-  {
-    id: 7,
-    subject: "Registration Confirmation for Amazon Fee Drop - Bengaluru Edition",
-    email: "dm@medopharmwellness.com",
-    channel: "Aws",
-    status: "Delivered",
-    sentAt: "2026-03-13-04:58:09",
-  },
-  {
-    id: 8,
-    subject: "Registration Confirmation for Amazon Fee Drop - Bengaluru Edition",
-    email: "prrraveen@gmail.com",
-    channel: "Aws",
-    status: "Open",
-    sentAt: "2026-03-13-10:18:08",
-  },
-  {
-    id: 9,
-    subject: "Registration Confirmation for Amazon Fee Drop - Bengaluru Edition",
-    email: "ferricforgegroup@gmail.com",
-    channel: "Aws",
-    status: "Open",
-    sentAt: "2026-03-13-10:11:31",
-  },
-  {
-    id: 10,
-    subject: "Registration Confirmation for Amazon Fee Drop - Bengaluru Edition",
-    email: "yuvin.bangalore@gmail.com",
-    channel: "Aws",
-    status: "Open",
-    sentAt: "2026-03-13-10:08:06",
-  },
-  {
-    id: 11,
-    subject: "Registration Confirmation for Amazon Fee Drop - Bengaluru Edition",
-    email: "contact@startupcircle.in",
-    channel: "Aws",
-    status: "Bounce",
-    sentAt: "2026-03-13-09:46:22",
-  },
-  {
-    id: 12,
-    subject: "Registration Confirmation for Amazon Fee Drop - Bengaluru Edition",
-    email: "support@marketnode.ai",
-    channel: "Aws",
-    status: "Open",
-    sentAt: "2026-03-13-09:12:14",
-  },
-];
-
-const summaryCards = [
-  { label: "Total Emails", value: 92, icon: <FaEnvelope />, tint: "bg-blue-50 text-blue-600" },
-  { label: "Total Send", value: 92, icon: <FaBell />, tint: "bg-emerald-50 text-emerald-600" },
-  { label: "Total Delivered", value: 92, icon: <FaEnvelope />, tint: "bg-sky-50 text-sky-600" },
-  { label: "Total Open", value: 67, icon: <FaEnvelope />, tint: "bg-amber-50 text-amber-600" },
-  { label: "Total Bounce", value: 5, icon: <FaEnvelope />, tint: "bg-rose-50 text-rose-600" },
-];
+import { apiRequest } from "../lib/api";
 
 const statusBadge = (status) => {
   if (status === "Open") return "bg-blue-50 text-blue-600";
@@ -130,8 +24,18 @@ const ProjectReport = () => {
   const [emailFilter, setEmailFilter] = useState("");
   const [subjectFilter, setSubjectFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [fromDate, setFromDate] = useState("2026-03-13");
-  const [toDate, setToDate] = useState("2026-03-13");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [reportRows, setReportRows] = useState([]);
+  const [summary, setSummary] = useState({
+    totalEmails: 0,
+    totalSend: 0,
+    totalDelivered: 0,
+    totalOpen: 0,
+    totalBounce: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -139,27 +43,53 @@ const ProjectReport = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const fetchReport = async () => {
+      try {
+        setLoading(true);
+        setError("");
+        const data = await apiRequest(`/api/projects/${projectId}/report`);
+        setSummary(data.summary);
+        setReportRows(data.reports || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReport();
+  }, [projectId]);
+
   const sidebarShouldBeOpen = isMobile ? sidebarOpen : true;
+
+  const summaryCards = [
+    { label: "Total Emails", value: summary.totalEmails, icon: <FaEnvelope />, tint: "bg-blue-50 text-blue-600" },
+    { label: "Total Send", value: summary.totalSend, icon: <FaBell />, tint: "bg-emerald-50 text-emerald-600" },
+    { label: "Total Delivered", value: summary.totalDelivered, icon: <FaEnvelope />, tint: "bg-sky-50 text-sky-600" },
+    { label: "Total Open", value: summary.totalOpen, icon: <FaEnvelope />, tint: "bg-amber-50 text-amber-600" },
+    { label: "Total Bounce", value: summary.totalBounce, icon: <FaEnvelope />, tint: "bg-rose-50 text-rose-600" },
+  ];
 
   const filteredRows = useMemo(() => {
     return reportRows.filter((row) => {
-      const matchesEmail = row.email.toLowerCase().includes(emailFilter.toLowerCase());
-      const matchesSubject = row.subject.toLowerCase().includes(subjectFilter.toLowerCase());
+      const matchesEmail = (row.email || "").toLowerCase().includes(emailFilter.toLowerCase());
+      const matchesSubject = (row.subject || "").toLowerCase().includes(subjectFilter.toLowerCase());
       const matchesStatus = statusFilter ? row.status === statusFilter : true;
-      const rowDate = row.sentAt.slice(0, 10);
+      const rowDate = (row.sentAt || "").slice(0, 10);
       const matchesFromDate = fromDate ? rowDate >= fromDate : true;
       const matchesToDate = toDate ? rowDate <= toDate : true;
 
       return matchesEmail && matchesSubject && matchesStatus && matchesFromDate && matchesToDate;
     });
-  }, [emailFilter, subjectFilter, statusFilter, fromDate, toDate]);
+  }, [reportRows, emailFilter, subjectFilter, statusFilter, fromDate, toDate]);
 
   const resetFilters = () => {
     setEmailFilter("");
     setSubjectFilter("");
     setStatusFilter("");
-    setFromDate("2026-03-13");
-    setToDate("2026-03-13");
+    setFromDate("");
+    setToDate("");
   };
 
   return (
@@ -274,9 +204,28 @@ const ProjectReport = () => {
             </div>
 
             <div className="mb-3 text-sm text-gray-500">
-              1 - {filteredRows.length} of {filteredRows.length}
+              {filteredRows.length > 0 ? `1 - ${filteredRows.length}` : "0"} of {filteredRows.length}
             </div>
 
+            {loading && (
+              <div className="rounded-2xl border border-gray-200 p-6 text-sm text-gray-500">
+                Loading report...
+              </div>
+            )}
+
+            {!loading && error && (
+              <div className="rounded-2xl border border-gray-200 p-6 text-sm text-red-600">
+                {error}
+              </div>
+            )}
+
+            {!loading && !error && filteredRows.length === 0 && (
+              <div className="rounded-2xl border border-gray-200 p-6 text-sm text-gray-500">
+                No report data found.
+              </div>
+            )}
+
+            {!loading && !error && filteredRows.length > 0 && (
             <div className="overflow-hidden rounded-2xl border border-gray-200">
               <div className="overflow-x-auto">
                 <table className="min-w-980px w-full text-sm">
@@ -290,8 +239,8 @@ const ProjectReport = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {filteredRows.map((row) => (
-                      <tr key={row.id} className="hover:bg-gray-50">
+                    {filteredRows.map((row, index) => (
+                      <tr key={row.id || index} className="hover:bg-gray-50">
                         <td className="px-4 py-3">{row.subject}</td>
                         <td className="px-4 py-3">{row.email}</td>
                         <td className="px-4 py-3">{row.channel}</td>
@@ -307,6 +256,7 @@ const ProjectReport = () => {
                 </table>
               </div>
             </div>
+            )}
         </section>
       </main>
     </div>

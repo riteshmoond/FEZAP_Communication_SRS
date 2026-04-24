@@ -1,28 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
+import { apiRequest } from '../lib/api';
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [userInfo, setUserInfo] = useState(null);
+  const [summary, setSummary] = useState({
+    totalEmails: 0,
+    failedEmails: 0,
+    activeProjects: 0,
+  });
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [loading, setLoading] = useState(true);
   // Fetch user info from backend
   useEffect(() => {
-    const fetchUserInfo = async () => {
+    const fetchDashboard = async () => {
       try {
-        const response = await fetch("/api/auth/me", {
-          method: "GET",
-          credentials: "include" // send cookies
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUserInfo(data);
-        }
+        const [userData, dashboardData] = await Promise.all([
+          apiRequest("/api/auth/me"),
+          apiRequest("/api/projects/dashboard/summary"),
+        ]);
+        setUserInfo(userData.user);
+        setSummary(dashboardData.summary);
+        setRecentActivity(dashboardData.recentActivity || []);
       } catch (error) {
-        // Optionally handle error
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchUserInfo();
+    fetchDashboard();
   }, []);
 
   useEffect(() => {
@@ -32,38 +40,6 @@ const Dashboard = () => {
   }, []);
 
   const sidebarShouldBeOpen = isMobile ? sidebarOpen : true;
-
-  const [emailsSent, setEmailsSent] = useState(0);
-  const [failedEmails, setFailedEmails] = useState(0);
-  const [activeProjects, setActiveProjects] = useState(0);
-
-  useEffect(() => {
-    let sentTarget = 1250;
-    let failedTarget = 23;
-    let projectsTarget = 5;
-    let sent = 0, failed = 0, projects = 0;
-    const duration = 1200;
-    const steps = 40;
-    const sentStep = Math.ceil(sentTarget / steps);
-    const failedStep = Math.ceil(failedTarget / steps);
-    const projectsStep = Math.ceil(projectsTarget / steps);
-    let count = 0;
-
-    const interval = setInterval(() => {
-      count++;
-      sent = Math.min(sent + sentStep, sentTarget);
-      failed = Math.min(failed + failedStep, failedTarget);
-      projects = Math.min(projects + projectsStep, projectsTarget);
-
-      setEmailsSent(sent);
-      setFailedEmails(failed);
-      setActiveProjects(projects);
-
-      if (count >= steps) clearInterval(interval);
-    }, duration / steps);
-
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -109,19 +85,19 @@ const Dashboard = () => {
 
             {/* Emails Sent */}
             <div className="flex-1 min-w-180px bg-[#232946] text-white rounded-xl p-6">
-              <div className="text-3xl font-bold">{emailsSent.toLocaleString()}</div>
+              <div className="text-3xl font-bold">{summary.totalEmails.toLocaleString()}</div>
               <div className="text-sm opacity-80">Total emails sent</div>
             </div>
 
             {/* Failed Emails */}
             <div className="flex-1 min-w-180px bg-[#ffd369] text-[#232946] rounded-xl p-6">
-              <div className="text-3xl font-bold">{failedEmails}</div>
+              <div className="text-3xl font-bold">{summary.failedEmails}</div>
               <div className="text-sm opacity-80">Failed emails</div>
             </div>
 
             {/* Active Projects */}
             <div className="flex-1 min-w-180px bg-white text-[#232946] rounded-xl p-6 shadow">
-              <div className="text-3xl font-bold">{activeProjects}</div>
+              <div className="text-3xl font-bold">{summary.activeProjects}</div>
               <div className="text-sm opacity-80">Active projects</div>
             </div>
 
@@ -131,12 +107,17 @@ const Dashboard = () => {
           <div className="bg-white rounded-xl shadow p-6">
             <div className="font-semibold text-lg mb-3">Recent activity</div>
 
-            <ul className="text-gray-700 text-sm space-y-2">
-              <li>• Email sent to <b>client1@example.com</b></li>
-              <li>• Project <b>Alpha</b> marked as active</li>
-              <li>• Failed to send email to <b>client2@example.com</b></li>
-              <li>• New project <b>Beta</b> created</li>
-            </ul>
+            {loading ? (
+              <div className="text-gray-500 text-sm">Loading activity...</div>
+            ) : recentActivity.length > 0 ? (
+              <ul className="text-gray-700 text-sm space-y-2">
+                {recentActivity.map((activity) => (
+                  <li key={activity.id || activity.createdAt}>{activity.message}</li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-gray-500 text-sm">No recent activity found.</div>
+            )}
           </div>
 
         </div>

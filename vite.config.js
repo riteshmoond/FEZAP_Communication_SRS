@@ -6,6 +6,12 @@ export default defineConfig({
   base: '/fezap/',   // 🔥 YE ADD KARNA HAI
   plugins: [react(), tailwindcss()],
   server: {
-    historyApiFallback: true
+    historyApiFallback: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      }
+    }
   }
 })

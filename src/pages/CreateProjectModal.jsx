@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AddProjectFormModal from "./AddProjectFormModal";
 
-function CreateProjectModal({ onClose }) {
+function CreateProjectModal({ onClose, onCreate }) {
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState(null);
 
@@ -11,7 +11,7 @@ function CreateProjectModal({ onClose }) {
   };
 
   if (showForm && selected) {
-    return <AddProjectFormModal channel={selected} onClose={onClose} />;
+    return <AddProjectFormModal channel={selected} onClose={onClose} onCreate={onCreate} />;
   }
 
   return (

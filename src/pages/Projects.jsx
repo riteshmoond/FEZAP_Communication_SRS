@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar";
 import { FaEllipsisV, FaEdit, FaFileAlt } from "react-icons/fa";
 import EditProjectModal from "./EditProjectModal";
 import CreateProjectModal from "./CreateProjectModal";
+import { apiRequest, mapProjectFromApi, toProjectPayload } from "../lib/api";
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -12,140 +13,9 @@ const Projects = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [viaFilter, setViaFilter] = useState("");
 
-  const [projects, setProjects] = useState([
-    {
-      id: 1,
-      name: "Angular 2026",
-      secret: "5a8d85f6-577f-41bf-8a69-bdae60f29516",
-      vendor: "aws",
-      via: "Mail",
-      status: "Active",
-      badge: "Verified",
-      badgeType: "verified",
-      enabled: true,
-    },
-    {
-      id: 2,
-      name: "Summit 2026",
-      secret: "f52adb55-3000-4bae-8d48-eb6e5a739bcc",
-      vendor: "smtp",
-      via: "Mail",
-      status: "Active",
-      badge: "Verify Webhook",
-      badgeType: "webhook",
-      enabled: true,
-    },
-    {
-      id: 3,
-      name: "Phoenix Cloud",
-      secret: "91d5a670-9f8c-43a4-9fc7-2f6f8f36d301",
-      vendor: "sendgrid",
-      via: "Mail",
-      status: "Active",
-      badge: "Verified",
-      badgeType: "verified",
-      enabled: true,
-    },
-    {
-      id: 4,
-      name: "Retail Sync",
-      secret: "2b6d13f4-9e39-4f96-8e6f-b41d0fb3f11a",
-      vendor: "aws",
-      via: "WhatsApp",
-      status: "Deactive",
-      badge: "Verify Webhook",
-      badgeType: "webhook",
-      enabled: false,
-    },
-    {
-      id: 5,
-      name: "Orbit Notify",
-      secret: "7c33db25-1243-4cbb-9a0b-7d9b0fd5ae42",
-      vendor: "mailgun",
-      via: "Mail",
-      status: "Active",
-      badge: "Domain Linked",
-      badgeType: "domain",
-      enabled: true,
-    },
-    {
-      id: 6,
-      name: "Nova Outreach",
-      secret: "dc1fa761-7d84-4d90-9dc2-d70afdd2bb15",
-      vendor: "smtp",
-      via: "Mail",
-      status: "Active",
-      badge: "Verified",
-      badgeType: "verified",
-      enabled: true,
-    },
-    {
-      id: 7,
-      name: "Astra Connect",
-      secret: "fe38df45-b9b7-4f05-8677-0d2989b4d5c0",
-      vendor: "postmark",
-      via: "Mail",
-      status: "Deactive",
-      badge: "Verify Webhook",
-      badgeType: "webhook",
-      enabled: false,
-    },
-    {
-      id: 8,
-      name: "Growth Pulse",
-      secret: "68ad7e1a-4a1a-4f53-b73c-c82d315c6ee7",
-      vendor: "aws",
-      via: "WhatsApp",
-      status: "Active",
-      badge: "Domain Linked",
-      badgeType: "domain",
-      enabled: true,
-    },
-    {
-      id: 9,
-      name: "Vertex Alerts",
-      secret: "51cf23fa-e0d8-4dd9-af0e-3347efbfd27b",
-      vendor: "smtp",
-      via: "Mail",
-      status: "Active",
-      badge: "Verified",
-      badgeType: "verified",
-      enabled: true,
-    },
-    {
-      id: 10,
-      name: "Beacon Ops",
-      secret: "83b116a3-67db-466c-a2a0-640a3031e6c5",
-      vendor: "sendgrid",
-      via: "Mail",
-      status: "Deactive",
-      badge: "Verify Webhook",
-      badgeType: "webhook",
-      enabled: false,
-    },
-    {
-      id: 11,
-      name: "Nimbus Desk",
-      secret: "aa9d4daa-5a1b-4924-a9bf-f50c6b4204e2",
-      vendor: "mailgun",
-      via: "Mail",
-      status: "Active",
-      badge: "Domain Linked",
-      badgeType: "domain",
-      enabled: true,
-    },
-    {
-      id: 12,
-      name: "Alpha Reach",
-      secret: "c5eb4ef1-f0cb-4923-8234-d095d3ef7b9d",
-      vendor: "postmark",
-      via: "Mail",
-      status: "Active",
-      badge: "Verified",
-      badgeType: "verified",
-      enabled: true,
-    },
-  ]);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -160,6 +30,23 @@ const Projects = () => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const data = await apiRequest("/api/projects?limit=100");
+      setProjects((data.projects || []).map(mapProjectFromApi));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
   }, []);
 
   useEffect(() => {
@@ -181,23 +68,53 @@ const Projects = () => {
     if (type === "verified") return "bg-green-100 text-green-600";
     if (type === "webhook") return "bg-orange-100 text-orange-600";
     if (type === "domain") return "bg-blue-100 text-blue-600";
+    if (type === "inactive") return "bg-gray-100 text-gray-600";
     return "bg-gray-100 text-gray-600";
   };
 
-  const handleToggle = (id) => {
-    setProjects(projects.map((p) =>
-      p.id === id ? { ...p, enabled: !p.enabled } : p
-    ));
+  const handleToggle = async (id) => {
+    const project = projects.find((p) => p.id === id);
+    if (!project) return;
+
+    try {
+      const nextStatus = project.enabled ? "inactive" : "active";
+      await apiRequest(`/api/projects/${id}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: nextStatus }),
+      });
+      setProjects(projects.map((p) =>
+        p.id === id
+          ? {
+              ...p,
+              enabled: !p.enabled,
+              status: nextStatus === "active" ? "Active" : "Deactive",
+              badge: nextStatus === "active" ? "Verified" : "Inactive",
+              badgeType: nextStatus === "active" ? "verified" : "inactive",
+            }
+          : p
+      ));
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
-  const handleUpdateProject = (updatedProject) => {
-    setProjects((prev) =>
-      prev.map((p) =>
-        p.id === updatedProject.id ? { ...p, ...updatedProject } : p
-      )
-    );
+  const handleUpdateProject = async (updatedProject) => {
+    await apiRequest(`/api/projects/${updatedProject.id}`, {
+      method: "PUT",
+      body: JSON.stringify(toProjectPayload(updatedProject)),
+    });
+    await fetchProjects();
     setEditModalOpen(false);
     setEditProject(null);
+  };
+
+  const handleCreateProject = async (project) => {
+    await apiRequest("/api/projects", {
+      method: "POST",
+      body: JSON.stringify(toProjectPayload(project)),
+    });
+    await fetchProjects();
+    setCreateModalOpen(false);
   };
 
   const openProjectReport = (projectId) => {
@@ -323,7 +240,26 @@ const Projects = () => {
           </button>
         </div>
 
+        {loading && (
+          <div className="bg-white rounded-xl shadow border p-6 text-sm text-gray-500">
+            Loading projects...
+          </div>
+        )}
+
+        {!loading && error && (
+          <div className="bg-white rounded-xl shadow border p-6 text-sm text-red-600">
+            {error}
+          </div>
+        )}
+
+        {!loading && !error && filteredProjects.length === 0 && (
+          <div className="bg-white rounded-xl shadow border p-6 text-sm text-gray-500">
+            No projects found.
+          </div>
+        )}
+
         {/* ✅ MOBILE + TABLET VIEW */}
+        {!loading && !error && filteredProjects.length > 0 && (
         <div className="block lg:hidden space-y-3">
           {filteredProjects.map((project) => (
             <div key={project.id} className="bg-white rounded-xl shadow border p-4">
@@ -411,8 +347,10 @@ const Projects = () => {
             </div>
           ))}
         </div>
+        )}
 
         {/* ✅ DESKTOP TABLE */}
+        {!loading && !error && filteredProjects.length > 0 && (
         <div className="hidden lg:block bg-white rounded-xl shadow border border-gray-200 overflow-x-auto max-w-full">
           <table className="min-w-225 w-full text-sm">
             <thead className="bg-gray-50 text-gray-600">
@@ -507,6 +445,7 @@ const Projects = () => {
             </tbody>
           </table>
         </div>
+        )}
 
         {/* Edit Modal */}
         {editModalOpen && editProject && (
@@ -519,7 +458,10 @@ const Projects = () => {
 
         {/* Create Modal */}
         {createModalOpen && (
-          <CreateProjectModal onClose={() => setCreateModalOpen(false)} />
+          <CreateProjectModal
+            onClose={() => setCreateModalOpen(false)}
+            onCreate={handleCreateProject}
+          />
         )}
 
       </div>

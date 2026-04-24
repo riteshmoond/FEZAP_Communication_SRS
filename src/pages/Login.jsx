@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import fezapLogo from "../assets/fezap-login-logo.jpeg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { apiRequest } from "../lib/api";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,26 +19,15 @@ const Login = () => {
   }
 
   try {
-    const response = await fetch("http://localhost:5000/api/auth/login", {
+    const result = await apiRequest("/api/auth/login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: "include",
       body: JSON.stringify({ email, password })
     });
 
-    const result = await response.json();
-
-    if (response.ok) {
-      // Save user email to localStorage for auth
-      if(result.user && result.user.email){
-        localStorage.setItem('userEmail', result.user.email);
-      }
-      navigate("/dashboard");
-    } else {
-      alert(result.message || "Login failed");
+    if(result.user && result.user.email){
+      localStorage.setItem('userEmail', result.user.email);
     }
+    navigate("/dashboard");
 
   } catch (error) {
     alert("Login error: " + error.message);

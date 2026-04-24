@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 function EditProjectModal({ project, onClose, onUpdate }) {
   const [form, setForm] = useState({ ...project });
+  const [saving, setSaving] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -12,10 +13,15 @@ function EditProjectModal({ project, onClose, onUpdate }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onUpdate(form);
-    onClose();
+    try {
+      setSaving(true);
+      await onUpdate(form);
+    } catch (err) {
+      alert(err.message);
+      setSaving(false);
+    }
   };
 
   return (
@@ -49,6 +55,7 @@ function EditProjectModal({ project, onClose, onUpdate }) {
               placeholder="Sender Name"
               value={form.senderName || ''}
               onChange={handleChange}
+              required
               className="flex-1 px-3 py-2 border rounded-md text-sm"
             />
           </div>
@@ -59,6 +66,7 @@ function EditProjectModal({ project, onClose, onUpdate }) {
               placeholder="Sender Email"
               value={form.senderEmail || ''}
               onChange={handleChange}
+              required
               className="flex-1 px-3 py-2 border rounded-md text-sm"
             />
             <input
@@ -66,6 +74,7 @@ function EditProjectModal({ project, onClose, onUpdate }) {
               placeholder="Reply To"
               value={form.replyTo || ''}
               onChange={handleChange}
+              required
               className="flex-1 px-3 py-2 border rounded-md text-sm"
             />
           </div>
@@ -178,14 +187,16 @@ function EditProjectModal({ project, onClose, onUpdate }) {
             placeholder="Sender Email Username"
             value={form.senderEmailUsername || ''}
             onChange={handleChange}
+            required
             className="px-3 py-2 border rounded-md text-sm"
           />
           {/* Button */}
           <button
             type="submit"
+            disabled={saving}
             className="w-full py-3 bg-[#232946] text-white rounded-md font-semibold mt-2"
           >
-            Update
+            {saving ? "Updating..." : "Update"}
           </button>
         </form>
       </div>

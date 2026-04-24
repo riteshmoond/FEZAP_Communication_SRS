@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function AddProjectFormModal({  onClose }) {
+function AddProjectFormModal({ onClose, onCreate }) {
   const [form, setForm] = useState({
     projectName: "",
     senderName: "",
@@ -10,6 +10,7 @@ function AddProjectFormModal({  onClose }) {
     vendor: "Aws",
     senderEmailUsername: "",
   });
+  const [saving, setSaving] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,9 +21,15 @@ function AddProjectFormModal({  onClose }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onClose();
+    try {
+      setSaving(true);
+      await onCreate(form);
+    } catch (err) {
+      alert(err.message);
+      setSaving(false);
+    }
   };
 
   return (
@@ -56,6 +63,7 @@ function AddProjectFormModal({  onClose }) {
               placeholder="Sender Name"
               value={form.senderName}
               onChange={handleChange}
+              required
               className="flex-1 px-3 py-2 border rounded-md text-sm"
             />
           </div>
@@ -66,6 +74,7 @@ function AddProjectFormModal({  onClose }) {
               placeholder="Sender Email"
               value={form.senderEmail}
               onChange={handleChange}
+              required
               className="flex-1 px-3 py-2 border rounded-md text-sm"
             />
             <input
@@ -73,6 +82,7 @@ function AddProjectFormModal({  onClose }) {
               placeholder="Reply To"
               value={form.replyTo}
               onChange={handleChange}
+              required
               className="flex-1 px-3 py-2 border rounded-md text-sm"
             />
           </div>
@@ -176,14 +186,16 @@ function AddProjectFormModal({  onClose }) {
             placeholder="Sender Email Username"
             value={form.senderEmailUsername}
             onChange={handleChange}
+            required
             className="px-3 py-2 border rounded-md text-sm"
           />
           {/* Button */}
           <button
             type="submit"
+            disabled={saving}
             className="w-full py-3 bg-[#232946] text-white rounded-md font-semibold mt-2"
           >
-            Add
+            {saving ? "Adding..." : "Add"}
           </button>
         </form>
       </div>
