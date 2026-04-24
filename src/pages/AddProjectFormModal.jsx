@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-function AddProjectFormModal({ onClose, onCreate }) {
+function AddProjectFormModal({ channel, onClose, onCreate }) {
   const [form, setForm] = useState({
+    via: channel || "Mail",
     projectName: "",
     senderName: "",
     senderEmail: "",

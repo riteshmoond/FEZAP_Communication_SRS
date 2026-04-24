@@ -22,6 +22,7 @@ export const apiRequest = async (path, options = {}) => {
 };
 
 export const toProjectPayload = (project) => ({
+  via: project.via,
   projectName: project.projectName ?? project.name,
   senderName: project.senderName,
   senderEmail: project.senderEmail,
@@ -43,7 +44,7 @@ export const mapProjectFromApi = (project) => ({
   name: project.name,
   secret: project.secret_key,
   vendor: project.vendor,
-  via: "Mail",
+  via: project.via || "Mail",
   status: project.status === "active" ? "Active" : "Deactive",
   badge: project.status === "active" ? "Verified" : "Inactive",
   badgeType: project.status === "active" ? "verified" : "inactive",
