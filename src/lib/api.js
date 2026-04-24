@@ -39,26 +39,31 @@ export const toProjectPayload = (project) => ({
   sendgridApiKey: project.sendgridApiKey,
 });
 
-export const mapProjectFromApi = (project) => ({
-  id: project.id,
-  name: project.name,
-  secret: project.secret_key,
-  vendor: project.vendor,
-  via: project.via || "Mail",
-  status: project.status === "active" ? "Active" : "Deactive",
-  badge: project.status === "active" ? "Verified" : "Inactive",
-  badgeType: project.status === "active" ? "verified" : "inactive",
-  enabled: project.status === "active",
-  senderName: project.sender_name,
-  senderEmail: project.sender_email,
-  replyTo: project.reply_to,
-  isClientSmtp: project.smtp_type,
-  senderEmailUsername: project.sender_email_username,
-  host: project.host,
-  port: project.port,
-  username: project.smtp_username,
-  password: project.smtp_password,
-  customSenderEmail: project.custom_sender_email,
-  customReplyTo: project.custom_reply_to,
-  sendgridApiKey: project.sendgrid_api_key,
-});
+export const mapProjectFromApi = (project) => {
+  const normalizedStatus = String(project.status || "").trim().toLowerCase();
+  const isActive = normalizedStatus === "active";
+
+  return {
+    id: project.id,
+    name: project.name,
+    secret: project.secret_key,
+    vendor: project.vendor,
+    via: project.via || "Mail",
+    status: isActive ? "Active" : "Deactive",
+    badge: isActive ? "Verified" : "Inactive",
+    badgeType: isActive ? "verified" : "inactive",
+    enabled: isActive,
+    senderName: project.sender_name,
+    senderEmail: project.sender_email,
+    replyTo: project.reply_to,
+    isClientSmtp: project.smtp_type,
+    senderEmailUsername: project.sender_email_username,
+    host: project.host,
+    port: project.port,
+    username: project.smtp_username,
+    password: project.smtp_password,
+    customSenderEmail: project.custom_sender_email,
+    customReplyTo: project.custom_reply_to,
+    sendgridApiKey: project.sendgrid_api_key,
+  };
+};

@@ -172,23 +172,23 @@ const Projects = () => {
           </button>
         )}
 
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className="mb-4 text-xl font-bold sm:text-2xl">
           Ritesh Gupta - Project Lists
         </h2>
 
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 items-stretch sm:items-center mb-4">
+        <div className="mb-4 grid grid-cols-1 gap-2 md:grid-cols-2 xl:flex xl:flex-wrap xl:items-center">
           <input
             placeholder="Search by name ,via ..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-3 py-2 border rounded-md w-full sm:w-50"
+            className="w-full rounded-md border bg-white px-3 py-2 md:col-span-2 xl:w-64"
           />
 
           <select
             value={vendorFilter}
             onChange={(e) => setVendorFilter(e.target.value)}
-            className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto"
+            className="w-full rounded-md border bg-white px-3 py-2 xl:w-auto"
           >
             <option value="">Credentials</option>
             {vendorOptions.map((vendor) => (
@@ -201,7 +201,7 @@ const Projects = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto"
+            className="w-full rounded-md border bg-white px-3 py-2 xl:w-auto"
           >
             <option value="">Status</option>
             {statusOptions.map((status) => (
@@ -214,7 +214,7 @@ const Projects = () => {
           <select
             value={viaFilter}
             onChange={(e) => setViaFilter(e.target.value)}
-            className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto"
+            className="w-full rounded-md border bg-white px-3 py-2 xl:w-auto"
           >
             <option value="">Email</option>
             {viaOptions.map((via) => (
@@ -225,7 +225,7 @@ const Projects = () => {
           </select>
 
           <button
-            className="px-3 py-2 border rounded-md bg-white w-full sm:w-auto"
+            className="w-full rounded-md border bg-white px-3 py-2 xl:w-auto"
             onClick={resetFilters}
             type="button"
           >
@@ -233,7 +233,7 @@ const Projects = () => {
           </button>
 
           <button
-            className="w-full sm:w-auto sm:ml-auto px-4 py-2 bg-[#232946] text-white rounded-md font-semibold"
+            className="w-full rounded-md bg-[#232946] px-4 py-2 font-semibold text-white md:col-span-2 xl:ml-auto xl:w-auto"
             onClick={() => setCreateModalOpen(true)}
           >
             Add
@@ -260,14 +260,14 @@ const Projects = () => {
 
         {/* ✅ MOBILE + TABLET VIEW */}
         {!loading && !error && filteredProjects.length > 0 && (
-        <div className="block lg:hidden space-y-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:hidden">
           {filteredProjects.map((project) => (
-            <div key={project.id} className="bg-white rounded-xl shadow border p-4">
+            <div key={project.id} className="flex h-full flex-col rounded-xl border bg-white p-4 shadow">
 
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <div className="font-semibold text-sm">{project.name}</div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-600">
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="break-words text-sm font-semibold sm:text-base">{project.name}</div>
+                  <span className="mt-2 inline-flex rounded-full bg-green-100 px-2 py-0.5 text-[10px] text-green-600">
                     {project.status}
                   </span>
                 </div>
@@ -309,29 +309,29 @@ const Projects = () => {
                 </div>
               </div>
 
-              <div className="text-xs text-gray-500 wrap-break-word mb-3">
+              <div className="mb-4 break-all rounded-lg bg-gray-50 px-3 py-2 font-mono text-[11px] text-gray-500 sm:text-xs">
                 {project.secret}
               </div>
 
-              <div className="grid grid-cols-3 gap-2 text-xs mb-3">
-                <div>
-                  <div className="text-gray-400">Vendor</div>
-                  <div>{project.vendor}</div>
+              <div className="mb-4 grid grid-cols-2 gap-3 text-xs sm:text-sm">
+                <div className="min-w-0">
+                  <div className="mb-1 text-gray-400">Vendor</div>
+                  <div className="break-words font-medium">{project.vendor}</div>
                 </div>
-                <div>
-                  <div className="text-gray-400">Via</div>
-                  <div>{project.via}</div>
+                <div className="min-w-0">
+                  <div className="mb-1 text-gray-400">Via</div>
+                  <div className="break-words font-medium">{project.via}</div>
                 </div>
-                <div>
-                  <div className="text-gray-400">Status</div>
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] ${badgeColor(project.badgeType)}`}>
+                <div className="col-span-2 min-w-0">
+                  <div className="mb-1 text-gray-400">Status</div>
+                  <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] ${badgeColor(project.badgeType)}`}>
                     {project.badge}
                   </span>
                 </div>
               </div>
 
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">Enable</span>
+              <div className="mt-auto flex items-center justify-between gap-3 border-t border-gray-100 pt-3">
+                <span className="text-xs text-gray-500 sm:text-sm">Enable</span>
 
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
